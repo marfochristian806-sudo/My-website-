@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SupportDesk — Priority Queue Ticket System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">Q</div>
+      <div>
+        <h1>SupportDesk</h1>
+        <p>Priority-Queue Ticket System · Min-Heap with FIFO tie-break</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button id="simToggle" class="btn btn-ghost" title="Toggle automatic ticket arrivals">⏸ Pause arrivals</button>
+    </div>
+  </header>
+
+  <section class="stats" id="stats">
+    <div class="stat-card"><span class="stat-num" id="statWaiting">0</span><span class="stat-label">Waiting</span></div>
+    <div class="stat-card"><span class="stat-num accent" id="statServing">0</span><span class="stat-label">In Progress</span></div>
+    <div class="stat-card"><span class="stat-num green" id="statResolved">0</span><span class="stat-label">Resolved</span></div>
+    <div class="stat-card"><span class="stat-num" id="statServed">0</span><span class="stat-label">Total Served</span></div>
+    <div class="stat-card"><span class="stat-num" id="statAvgWait">0s</span><span class="stat-label">Avg Wait (served)</span></div>
+  </section>
+
+  <main class="layout">
+    <!-- LEFT: new ticket + now serving -->
+    <div class="col col-left">
+      <section class="panel">
+        <h2>New Ticket</h2>
+        <form id="ticketForm" autocomplete="off">
+          <label>Customer
+            <input type="text" id="customerInput" placeholder="e.g. Alice Nguyen" required maxlength="40" />
+          </label>
+          <label>Issue
+            <input type="text" id="issueInput" placeholder="e.g. Cannot reset password" required maxlength="80" />
+          </label>
+          <label>Priority
+            <div class="priority-picker" id="priorityPicker">
+              <button type="button" data-p="1" class="prio prio-critical active">Critical</button>
+              <button type="button" data-p="2" class="prio prio-high">High</button>
+              <button type="button" data-p="3" class="prio prio-medium">Medium</button>
+              <button type="button" data-p="4" class="prio prio-low">Low</button>
+            </div>
+          </label>
+          <button type="submit" class="btn btn-primary">Enqueue Ticket</button>
+        </form>
+      </section>
+
+      <section class="panel serving-panel">
+        <h2>Now Serving</h2>
+        <div id="servingArea" class="serving-area">
+          <p class="empty-hint">No ticket in progress.<br/>Press <strong>Dequeue &amp; Serve</strong> to take the highest-priority ticket.</p>
+        </div>
+        <button id="serveBtn" class="btn btn-accent">▶ Dequeue &amp; Serve Next</button>
+      </section>
+    </div>
+
+    <!-- MIDDLE: heap visualization + queue -->
+    <div class="col col-mid">
+      <section class="panel">
+        <h2>Priority Heap <span class="h2-sub">min-heap array · key = priority × 10000 + arrival #</span></h2>
+        <div id="heapViz" class="heap-viz"></div>
+        <div class="heap-legend">
+          <span><i class="dot prio-critical-bg"></i>Critical (key 1xxxx)</span>
+          <span><i class="dot prio-high-bg"></i>High (2xxxx)</span>
+          <span><i class="dot prio-medium-bg"></i>Medium (3xxxx)</span>
+          <span><i class="dot prio-low-bg"></i>Low (4xxxx)</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Dequeue Order <span class="h2-sub">the sequence the heap will serve tickets</span></h2>
+        <ol id="queueList" class="queue-list"></ol>
+      </section>
+    </div>
+
+    <!-- RIGHT: operation log -->
+    <div class="col col-right">
+      <section class="panel log-panel">
+        <h2>Operation Log <button id="clearLog" class="btn btn-mini">Clear</button></h2>
+        <ul id="opLog" class="op-log"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Resolved <span class="h2-sub">most recent first</span></h2>
+        <ul id="resolvedList" class="resolved-list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    Data Structures Assignment · Priority Queues — implemented from scratch with a binary min-heap.
+    <code>enqueue()</code> runs <em>O(log n)</em> bubble-up · <code>dequeue()</code> runs <em>O(log n)</em> sift-down · <code>peek()</code> is <em>O(1)</em>.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
